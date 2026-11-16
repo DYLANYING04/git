@@ -47,8 +47,8 @@ reports/2026-09/
 
 同一问卷含多个独立问题时，应按对象和措施拆成独立提案；如果因此复用 Excel 来源行，必须在 `allowed_reused_rows` 写明拆分理由。每条提案的历史检索都要记录在 `historical_search_log`，包括检索词、时间窗、结果状态和是否采用。
 
-对常见或疑似已处理的问题，按 `AGENTS.md` 中的“微信公众号历史检索”使用 `$agent-reach` 搜索“南燕研究生会”公开文章。只引用问卷月份向前12个月内且证据明确的记录；存在多个月份时，可以在 `history_reference` 中并列月份，但不写条号或具体提案名称。具体题名、公众号、检索词、证据类型和定位信息只保存在 `history_sources` 内部审查记录中。搜索摘要未展示的内容不得推断或补写。
+对常见或疑似已处理的问题，按 `AGENTS.md` 中的“微信公众号历史检索”使用仓库内 `scripts/history_search.py` 搜索“南燕研究生会”公开文章。只引用问卷月份向前12个月内且证据明确的记录；存在多个月份时，可以在 `history_reference` 中并列月份，但不写条号或具体提案名称。具体题名、公众号、检索词、证据类型和定位信息只保存在 `history_sources` 内部审查记录中。搜索摘要未展示的内容不得推断或补写。
 
-微信公众号检索的当前命令为：先用 `exa.web_search_exa` 搜索，再用 `exa.web_fetch_exa(urls: [...])` 抓取文章全文。旧版 `exa.crawling_exa` 已不可用；如果 `agent-reach doctor` 无输出，可用 `mcporter list` 检查 Exa 服务状态后继续。
+微信公众号检索的当前命令为：先用 `python scripts/history_search.py search` 搜索，再用 `python scripts/history_search.py fetch --url ...` 抓取文章全文。脚本内部优先使用 Exa MCP，或使用 `EXA_API_KEY` 直连，不需要安装其他 skill。
 
 重新渲染前会清理当月 `working/preview/` 的旧 PDF 和页图，防止旧页混入 manifest；逐页验收按数字页码顺序进行。

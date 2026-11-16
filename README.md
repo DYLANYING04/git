@@ -43,7 +43,7 @@ docker build -t nanyan-proposal .
 docker run --rm -v "C:\path\input:/input" -v "C:\path\output:/skill/reports" nanyan-proposal --xlsx /input/questionnaire.xlsx
 ```
 
-技能代码、模板、规则和 Python 依赖已固定；公众号历史检索仍需要网络和 Exa 路由或凭据，这是外部事实来源，不能离线内置。
+技能代码、模板、规则和 Python 依赖已固定。公众号历史检索由仓库内 `scripts/history_search.py` 提供：优先使用可用的 Exa MCP 路由，或使用 `EXA_API_KEY` 直连 Exa；不需要另行安装 Agent Reach skill。网络和 Exa 凭据仍是外部事实来源，不能离线内置。
 
 ## 公开仓库隐私要求
 

@@ -14,7 +14,7 @@ This skill turns one questionnaire `.xlsx` into a month-isolated Word proposal r
    `python scripts/monthly_report.py --xlsx "questionnaire.xlsx"`
    If it returns `needs_editorial_config`, this is an internal scaffold state, not a deliverable. Do not stop or ask the user to edit JSON. Read the workbook, complete the month-specific `proposal-config.json` yourself, and run the entry point again.
 2. Read the generated monthly `proposal-config.json` and inspect every non-empty response. Identify headers by name, validate contact fields, preserve source rows, split independent issues when they have different objects or measures, and record any reused row in `allowed_reused_rows`.
-3. Run an independent history search within the 12 months before the questionnaire month for every proposal. Earlier reports may be used for style and category reference only; never copy their `history_reference`, `history_sources`, or historical conclusions into the current month. Record the query, time window, result status, URLs, evidence type, and adoption decision in `historical_search_log`. Fetch article or mirror full text with `exa.web_fetch_exa`; never treat ordinary news, notices, meetings, prior report annotations, or out-of-window material as current historical evidence.
+3. Run `python scripts/history_search.py doctor` and then use the bundled `scripts/history_search.py search` and `fetch` commands for an independent history search within the 12 months before the questionnaire month for every proposal. The bundled router uses an available Exa MCP route first and falls back to `EXA_API_KEY`; no Agent Reach skill is required. Earlier reports may be used for style and category reference only; never copy their `history_reference`, `history_sources`, or historical conclusions into the current month. Record the query, time window, result status, URLs, evidence type, and adoption decision in `historical_search_log`. Never treat ordinary news, notices, meetings, prior report annotations, or out-of-window material as current historical evidence.
 4. Fill every proposal's `measure_basis` with exact questionnaire quotations. Do not add measures that are absent from the questionnaire.
 5. Re-run the same command. It creates the Word file, audit JSON, manifest, images, PDF, and page previews. The renderer clears stale preview files before conversion.
 6. Open every generated page under `reports/YYYY-MM/working/preview/` in numeric order. Check for blank pages, clipped text, orphan headings, overlap, misplaced images, and unexpected highlights.
@@ -26,7 +26,8 @@ This skill turns one questionnaire `.xlsx` into a month-isolated Word proposal r
 - `scripts/validate_proposal.py`: content, language, styles, source, contact, image, and highlight checks.
 - `templates/proposal-template.docx`: fixed approved layout.
 - `references/AGENTS.md`: full Chinese rules and quality gates.
-- `references/history-search.md`: Exa and mirror-search procedure.
+- `scripts/history_search.py`: bundled Exa health check, search, and full-text route.
+- `references/history-search.md`: independent Exa and mirror-search procedure.
 - `references/reproducibility.md`: frozen versus live search and release-archive guidance.
 
 ## Output contract
