@@ -49,6 +49,6 @@ reports/2026-09/
 
 对常见或疑似已处理的问题，按 `AGENTS.md` 中的“微信公众号历史检索”使用仓库内 `scripts/history_search.py` 搜索“南燕研究生会”公开文章。只引用问卷月份向前12个月内且证据明确的记录；存在多个月份时，可以在 `history_reference` 中并列月份，但不写条号或具体提案名称。具体题名、公众号、检索词、证据类型和定位信息只保存在 `history_sources` 内部审查记录中。搜索摘要未展示的内容不得推断或补写。
 
-微信公众号检索的当前命令为：先用 `python scripts/history_search.py search` 搜索，再用 `python scripts/history_search.py fetch --url ...` 抓取文章全文。脚本内部优先使用 Exa MCP，或使用 `EXA_API_KEY` 直连，不需要安装其他 skill。
+微信公众号检索的当前命令为：插件模式先调用随附的 `exa.web_search_exa` 和 `exa.web_fetch_exa`；终端模式使用 `python scripts/history_search.py search` 和 `python scripts/history_search.py fetch --url ...`。插件内置 Exa 托管 MCP，不需要安装其他 skill。
 
 重新渲染前会清理当月 `working/preview/` 的旧 PDF 和页图，防止旧页混入 manifest；逐页验收按数字页码顺序进行。

@@ -72,8 +72,8 @@
 
 ## 微信公众号历史检索
 
-1. 先运行 `python scripts/history_search.py doctor` 检查仓库内检索路由。脚本优先使用 Exa MCP，找不到时使用 `EXA_API_KEY` 直连；不依赖其他 skill。
-2. 公众号文章优先使用 Exa，不使用会被验证码拦截的 Jina Reader。
+1. 插件模式先使用 `.mcp.json` 中的 `exa` MCP（`https://mcp.exa.ai/mcp`）；终端模式再运行 `python scripts/history_search.py doctor` 检查仓库内检索路由。脚本优先使用 Exa MCP，找不到时使用 `EXA_API_KEY` 直连；不依赖其他 skill。
+2. 公众号文章优先使用 Exa，不使用会被验证码拦截的 Jina Reader。Exa 托管 MCP 基础匿名使用不要求 API key，但受限流影响。
 3. 以“南燕研究生会 + 核心问题词 + 提案”为首轮关键词，再分别加入可能的年份、月份、楼栋或设施名称缩小范围。例如：`南燕研究生会 上床下桌 提案`。每条提案至少保留一条对应检索记录；优先使用其具体对象、地点和设施词，不用一个“食堂”或“宿舍”宽词代替全部问题。
 4. 推荐命令：`python scripts/history_search.py search --query "南燕研究生会 上床下桌 提案" --num-results 10`。
 5. 获得微信文章 URL 后，用 `python scripts/history_search.py fetch --url "文章URL"` 抓取全文并核对标题、日期、条号、问题描述和部门回复。旧版 `exa.crawling_exa` 已废弃，不能再使用。

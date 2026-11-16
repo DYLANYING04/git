@@ -22,6 +22,8 @@ Set-Location nanyan-proposal-skill
 .\install.ps1
 ```
 
+如果 Codex/ChatGPT 支持插件安装，优先把仓库作为插件安装。仓库内的 `.codex-plugin/plugin.json` 和 `.mcp.json` 会一起注册 Exa 托管 MCP，使用 `https://mcp.exa.ai/mcp`，不需要另行安装 Agent Reach 或本地 Exa 服务。
+
 ## 使用
 
 ```powershell
@@ -43,7 +45,7 @@ docker build -t nanyan-proposal .
 docker run --rm -v "C:\path\input:/input" -v "C:\path\output:/skill/reports" nanyan-proposal --xlsx /input/questionnaire.xlsx
 ```
 
-技能代码、模板、规则和 Python 依赖已固定。公众号历史检索由仓库内 `scripts/history_search.py` 提供：优先使用可用的 Exa MCP 路由，或使用 `EXA_API_KEY` 直连 Exa；不需要另行安装 Agent Reach skill。网络和 Exa 凭据仍是外部事实来源，不能离线内置。
+技能代码、模板、规则和 Python 依赖已固定。插件模式下，公众号历史检索直接使用插件随附的 Exa MCP；终端模式下由 `scripts/history_search.py` 调用 Exa MCP 或 `EXA_API_KEY`。Exa 托管 MCP 的基础匿名使用不要求 API key，但需要网络并受服务限流。
 
 ## 公开仓库隐私要求
 

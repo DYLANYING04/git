@@ -4,7 +4,20 @@ Use this procedure for every proposal, not just one representative issue.
 
 ## Health check
 
-Run the bundled route check:
+When this repository is installed as a Codex/ChatGPT plugin, use the bundled `exa` MCP server first. Its endpoint is declared in `.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "exa": {
+      "type": "streamable-http",
+      "url": "https://mcp.exa.ai/mcp"
+    }
+  }
+}
+```
+
+Exa documents this hosted endpoint as an anonymous, rate-limited option; sign-in or an API key is only needed for higher limits or authenticated Exa Agent features. If the host does not load plugin MCP servers, run the bundled route check:
 
 ```powershell
 python scripts/history_search.py doctor

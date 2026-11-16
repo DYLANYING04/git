@@ -1,0 +1,7 @@
+{
+  "name": "nanyan-proposal",
+  "version": "1.0.0",
+  "description": "Generate Nanyan Graduate Student Union rights-proposal reports with bundled Exa public-account search.",
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}
