@@ -18,6 +18,18 @@
       "prompt": "For every proposal, search the prior 12 months of Nanyan proposal history and distinguish verified proposal evidence from ordinary campus news or meetings.",
       "expected_output": "One historical_search_log record per proposal; only verified and in-window evidence appears in Word supplements.",
       "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Process a questionnaire containing an uppercase email domain, a short contact value, and an overlong phone value.",
+      "expected_output": "Lowercase the email domain, exclude malformed contacts, and record the exclusion reasons in the audit JSON.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Process one response that mentions both a canteen issue and a campus-network issue.",
+      "expected_output": "Reject a mixed-domain proposal configuration and require separate proposals with explicit source-row reuse approval.",
+      "files": []
     }
   ]
 }
