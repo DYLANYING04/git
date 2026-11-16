@@ -8,13 +8,7 @@ Run `agent-reach doctor`. If it has no output or hangs, do not wait indefinitely
 
 ## Search
 
-Before live searching, inspect the private local archive from earlier report runs:
-
-```powershell
-python scripts/list_history_candidates.py --reports-root reports --period 2026-11
-```
-
-Use the returned entries as historical candidates, not as automatic truth. Check that the candidate source month is inside the current 12-month window and that its item is substantively related to the current proposal. Preserve the candidate's provenance in `history_sources`; distinguish an inherited approved-report or screenshot source from a newly fetched Exa article. A fresh report directory has no candidates by design, so an independent test that starts without the private archive cannot reproduce historical annotations that were established in an earlier approved report.
+Earlier report directories are not a history source for the current month. They may be read for layout, category, and wording reference only. Do not copy their `history_reference`, `history_sources`, screenshots, or historical conclusions into the current configuration.
 
 Start with a concrete query such as:
 
