@@ -1,0 +1,23 @@
+{
+  "skill_name": "nanyan-proposal",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Use the bundled Nanyan proposal workflow to turn the provided questionnaire Excel into the monthly Word report, preserving the approved template and validating every page.",
+      "expected_output": "A month-isolated DOCX, audit JSON, manifest, source snapshot, and page previews with all source rows and measures traceable.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Process a questionnaire where one response contains four unrelated issues. Split them into independently actionable proposals and document any reused source row.",
+      "expected_output": "Independent proposals with allowed_reused_rows and measure_basis quotations for each issue.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "For every proposal, search the prior 12 months of Nanyan proposal history and distinguish verified proposal evidence from ordinary campus news or meetings.",
+      "expected_output": "One historical_search_log record per proposal; only verified and in-window evidence appears in Word supplements.",
+      "files": []
+    }
+  ]
+}
