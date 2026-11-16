@@ -366,6 +366,45 @@ def validate_config(config, responses):
             raise ValueError(f"Excel 第 {row} 行被重复列入人工排除项")
         manual_exclusions[row] = reason
 
+    proposals = [
+        proposal
+        for section in config["sections"]
+        for proposal in section["proposals"]
+    ]
+    logs = config.get("historical_search_log")
+    if not isinstance(logs, list):
+        raise ValueError("配置缺少 historical_search_log 列表")
+    proposal_titles = [proposal.get("title", "") for proposal in proposals]
+    log_titles = [item.get("proposal_title") for item in logs if isinstance(item, dict)]
+    if len(logs) != len(proposals) or sorted(log_titles) != sorted(proposal_titles):
+        raise ValueError(
+            "historical_search_log 必须为每条提案提供且仅提供一条记录"
+        )
+    required_log_fields = {
+        "proposal_title",
+        "query",
+        "window",
+        "result",
+        "urls",
+        "evidence_type",
+        "adoption_decision",
+    }
+    for item in logs:
+        if not isinstance(item, dict):
+            raise ValueError("historical_search_log 中存在非对象记录")
+        missing = sorted(required_log_fields - set(item))
+        if missing:
+            raise ValueError(
+                "历史检索记录缺少字段：" + ", ".join(missing)
+            )
+        if not all(normalized(item.get(field)) for field in (
+            "proposal_title", "query", "window", "result",
+            "evidence_type", "adoption_decision"
+        )):
+            raise ValueError("历史检索记录的文字字段不能为空")
+        if not isinstance(item.get("urls"), list):
+            raise ValueError("历史检索记录的 urls 必须是列表")
+
     for section in config["sections"]:
         for proposal in section["proposals"]:
             rows = proposal.get("source_rows", [])

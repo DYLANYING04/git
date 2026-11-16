@@ -8,6 +8,7 @@
 - Excel 表头识别、联系方式准入、来源行映射
 - 多问题拆分、相似问题合并、措施原文依据
 - 逐条近 12 个月公众号历史检索和全文核验流程
+- 本地往期报告历史候选库扫描和来源继承记录
 - 图片下载、真实图片校验、压缩和 Word 插入
 - Word 结构/语言/来源/图片/高亮校验
 - PDF 和逐页预览
@@ -31,6 +32,8 @@ Set-Location nanyan-proposal-skill
 输出位于 `reports/YYYY-MM/`。技能会自动从文件名或填写日期识别月份。
 
 首次运行可能会建立一个空的 `proposal-config.json` 并返回 `needs_editorial_config`。这是给 AI 整理来源和正文的内部中间状态，不是最终结果；使用 skill 的 AI 必须继续读取 Excel、填写配置并再次运行，直到输出 Word 和审查文件。
+
+如果当前项目已有往期 `reports/YYYY-MM/`，AI 会先运行 `scripts/list_history_candidates.py`，把近一年内已有的历史依据作为候选，再逐条复核。没有往期报告的全新安装不会凭空拥有这些历史依据；公众号搜索仍然是实时检索，结果可能不同。
 
 ## 最强可复现模式
 
