@@ -20,6 +20,8 @@ from PIL import Image, ImageOps, UnidentifiedImageError
 
 
 EMPTY_VALUES = {"", "(空)", "空", "无", "暂无", "n/a", "none", "null"}
+EMAIL_PATTERN = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
+PHONE_PATTERN = re.compile(r"^1[3-9]\d{9}$")
 URL_PATTERN = re.compile(r'''https?://[^\s,，;；"'<>\)]+''', re.IGNORECASE)
 MAX_IMAGE_BYTES = 25 * 1024 * 1024
 SUPPORTED_IMAGE_FORMATS = {
@@ -44,6 +46,17 @@ UNSUPPORTED_MEASURES = {
     "夜间转介机制",
     "备用通行",
 }
+WEAK_PROBLEM_PHRASES = {
+    "饭菜温度不足",
+    "菜品温度不足",
+}
+TOPIC_GROUPS = {
+    "食堂": ("食堂", "饭菜", "菜品", "早餐", "包子", "麻辣烫"),
+    "网络": ("网络", "校园网", "pku网", "网速"),
+    "教学": ("课程", "教学网", "课堂", "课件", "录像回放"),
+    "住宿": ("宿舍", "床架", "电梯", "晾晒", "小飞虫"),
+    "运动": ("健身房", "运动场", "器械", "晨练"),
+}
 
 
 def normalized(value) -> str:
@@ -52,8 +65,44 @@ def normalized(value) -> str:
     return str(value).strip()
 
 
+def canonical_contact(value) -> str:
+    """Normalize common contact forms without accepting malformed values."""
+    contact = normalized(value)
+    if EMAIL_PATTERN.fullmatch(contact):
+        local, domain = contact.rsplit("@", 1)
+        return f"{local}@{domain.lower()}"
+    digits = re.sub(r"[\s-]", "", contact)
+    if PHONE_PATTERN.fullmatch(digits):
+        return digits
+    return contact
+
+
+def contact_error(value) -> str | None:
+    contact = canonical_contact(value)
+    if contact.lower() in EMPTY_VALUES:
+        return "未提供联系方式"
+    if EMAIL_PATTERN.fullmatch(contact):
+        return None
+    if PHONE_PATTERN.fullmatch(contact):
+        return None
+    return "联系方式格式无效（邮箱地址或11位中国大陆手机号码）"
+
+
 def valid_contact(value) -> bool:
-    return normalized(value).lower() not in EMPTY_VALUES
+    return contact_error(value) is None
+
+
+def topic_groups(text: str) -> set[str]:
+    lowered = text.lower()
+    groups = {
+        group
+        for group, terms in TOPIC_GROUPS.items()
+        if any(term.lower() in lowered for term in terms)
+    }
+    # "宿舍网络" is one network issue; "宿舍" is only its location.
+    if "网络" in groups:
+        groups.discard("住宿")
+    return groups
 
 
 def extract_image_urls(cell):
@@ -107,7 +156,7 @@ def load_responses(path: Path):
             continue
         responses[row] = {
             "source_id": source_id,
-            "contact": normalized(sheet.cell(row, columns["contact"]).value),
+            "contact": canonical_contact(sheet.cell(row, columns["contact"]).value),
             "problem": problem,
             "suggestion": (
                 normalized(sheet.cell(row, columns["suggestion"]).value)
@@ -416,6 +465,20 @@ def validate_config(config, responses):
             covered.update(rows)
             if "反应" in proposal["body"]:
                 raise ValueError(f"提案“{proposal['title']}”应使用“反映”")
+            weak_phrases = [
+                phrase for phrase in WEAK_PROBLEM_PHRASES if phrase in proposal["body"]
+            ]
+            if weak_phrases:
+                raise ValueError(
+                    f"提案“{proposal['title']}”含不准确的保温表述：{', '.join(weak_phrases)}；"
+                    "请改为“保温不当”等直接表述"
+                )
+            groups = topic_groups(proposal["body"])
+            if len(groups) > 1:
+                raise ValueError(
+                    f"提案“{proposal['title']}”混合了多个问题领域（{'、'.join(sorted(groups))}），"
+                    "请拆成独立提案"
+                )
             for phrase in sorted(DEFENSIVE_PHRASES):
                 if phrase in proposal["body"]:
                     raise ValueError(
@@ -627,7 +690,7 @@ def write_audit(config, responses, covered, image_downloads, output: Path):
         {
             "excel_row": row,
             "source_id": item["source_id"],
-            "reason": "未提供有效联系方式",
+            "reason": contact_error(item["contact"]) or "联系方式无效",
         }
         for row, item in responses.items()
         if not valid_contact(item["contact"])
