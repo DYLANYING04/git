@@ -30,6 +30,8 @@ Set-Location nanyan-proposal-skill
 
 输出位于 `reports/YYYY-MM/`。技能会自动从文件名或填写日期识别月份。
 
+首次运行可能会建立一个空的 `proposal-config.json` 并返回 `needs_editorial_config`。这是给 AI 整理来源和正文的内部中间状态，不是最终结果；使用 skill 的 AI 必须继续读取 Excel、填写配置并再次运行，直到输出 Word 和审查文件。
+
 ## 最强可复现模式
 
 不同电脑的 Word 分页可能因字体、LibreOffice 和 PDF 渲染器版本不同而变化。要尽量做到像素级一致，使用仓库内的 Dockerfile：

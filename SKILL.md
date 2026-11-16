@@ -12,6 +12,7 @@ This skill turns one questionnaire `.xlsx` into a month-isolated Word proposal r
 
 1. Run the bundled entry point with the user's Excel file:
    `python scripts/monthly_report.py --xlsx "questionnaire.xlsx"`
+   If it returns `needs_editorial_config`, this is an internal scaffold state, not a deliverable. Do not stop or ask the user to edit JSON. Read the workbook, complete the month-specific `proposal-config.json` yourself, and run the entry point again.
 2. Read the generated monthly `proposal-config.json` and inspect every non-empty response. Identify headers by name, validate contact fields, preserve source rows, split independent issues when they have different objects or measures, and record any reused row in `allowed_reused_rows`.
 3. For every proposal, run an individual history search within the 12 months before the questionnaire month. Record the query, time window, result status, URLs, evidence type, and adoption decision in `historical_search_log`. Fetch article or mirror full text with `exa.web_fetch_exa`; never treat ordinary news, notices, meetings, or out-of-window material as historical proposal evidence.
 4. Fill every proposal's `measure_basis` with exact questionnaire quotations. Do not add measures that are absent from the questionnaire.
